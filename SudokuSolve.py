@@ -92,11 +92,13 @@ def solve_Heuristic(board, gui=None):
     """Solves the board and displays board to GUI/renables buttons if gui is not none.
     Returns solved board as nested list """
     initial = board
-    for i in range(15):
+    for i in range(10):
         solved_board = heuristic_solve(initial, gui)
         if solved_board == False:
             continue
-        else: break
+        else:
+            print(i) 
+            break
     if gui:
         gui.toggle_buttons(True, True)
     return solved_board
@@ -121,13 +123,13 @@ def heuristic_solve(board, gui=None):
     # hiện thực heuristic function với beta-hillclimbing https://www.researchgate.net/publication/319886025_b-Hill_Climbing_Algorithm_for_Sudoku_Game
     in_board = [row[:] for row in board]
     N = 0.5
-    B = 0.5
+    B = 0.1
     random_board(in_board)
     z = heuristic_function(in_board)
     itr = 0 
     x1 = in_board
     x2 = in_board
-    while itr <= 10000:
+    while itr <= 8000:
         copy_inboard = [row[:] for row in in_board]
         x1 = N_operator(board,copy_inboard,N)
         if (random.random()<= B):
@@ -136,19 +138,18 @@ def heuristic_solve(board, gui=None):
         z1 = heuristic_function(x1)
         z_best= z2 if z2<z1 else z1
         xbest= x2 if z2<z1 else x1
+        # z_best = z1
+        # xbest = x1
         if(z_best < z):
             if(z_best == 0 and is_solution(xbest)):
                 print(xbest)
+                print(itr)
                 gui.move_array.append(copy.deepcopy(xbest))
                 return xbest
             in_board = xbest
             z = z_best
         itr +=1
     return False
-
-
-
-    
 
 
 # Mỗi bước thay đổi đều được cập nhật trên giao diện -> sửa số trong board -> thêm trạng thái mới vào move_array
